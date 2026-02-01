@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="text_small">14sp</dimen>
+    <dimen name="text_normal">16sp</dimen>
+    <dimen name="text_md">18sp</dimen>
+    <dimen name="header1">22sp</dimen>
+    <dimen name="header2">26sp</dimen>
+
+
+    <dimen name="button_height">56dp</dimen>
+    <dimen name="button_text_size">17sp</dimen>
+    <dimen name="button_padding_h">24dp</dimen>
+    <dimen name="button_padding_v">14dp</dimen>
+    <dimen name="button_margin_s">16dp</dimen>
+    <dimen name="button_margin_m">24dp</dimen>
+
+    <dimen name="padding_xs">8dp</dimen>
+    <dimen name="padding_normal">24dp</dimen>
+    <dimen name="padding_l">32dp</dimen>
+
+    <dimen name="margin">14dp</dimen>
+    <dimen name="margin_xs">16dp</dimen>
+    <dimen name="margin_normal">24dp</dimen>
+    <dimen name="margin_l">32dp</dimen>
+
+    <dimen name="fab_size">64dp</dimen>
+
+
+</resources>

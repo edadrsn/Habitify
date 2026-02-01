@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/selectedEmoji"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/icon_bg"
+        android:gravity="center"
+        android:padding="8dp"
+        android:src="@drawable/main_icon" />
+
+    <EditText
+        android:id="@+id/habitTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="@dimen/margin"
+        android:background="@drawable/edittext_bg"
+        android:hint="Habit Name"
+        android:inputType="textMultiLine"
+        android:minHeight="50dp"
+        android:padding="@dimen/padding_xs"
+        android:scrollbars="vertical"
+        android:textColor="#000000"
+        android:textColorHint="#999999"
+        android:textSize="@dimen/text_large"
+        android:textStyle="bold" />
+
+</LinearLayout>

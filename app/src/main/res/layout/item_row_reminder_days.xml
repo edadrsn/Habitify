@@ -1,0 +1,16 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_horizontal"
+    android:layout_marginTop="12dp">
+
+
+    <TextView  android:text="Mon" style="@style/DayChip"/>
+    <TextView  android:text="Tue" style="@style/DayChip"/>
+    <TextView  android:text="Wed" style="@style/DayChip"/>
+    <TextView  android:text="Thu" style="@style/DayChip"/>
+    <TextView  android:text="Fri" style="@style/DayChip"/>
+    <TextView  android:text="Sat" style="@style/DayChip"/>
+    <TextView  android:text="Sun" style="@style/DayChip"/>
+</LinearLayout>

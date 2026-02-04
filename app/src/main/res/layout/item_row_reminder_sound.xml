@@ -1,18 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
-
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/padding_xs"
+    android:paddingVertical="@dimen/padding_xs">
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Choose a Reminder sound" />
+        android:text="Choose a Reminder sound"
+        android:textColor="#000000"
+        android:textSize="@dimen/text_medium" />
 
     <LinearLayout
+        android:id="@+id/reminderSound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -21,19 +24,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/padding_xs"
-            android:paddingHorizontal="@dimen/padding_normal"
+            android:paddingHorizontal="@dimen/padding_xs"
             android:paddingVertical="@dimen/padding_xs"
-            android:text="Sound 1"
+            android:text="Sound"
+            android:textColor="#000000"
             android:textSize="@dimen/text_normal" />
 
-
-        <ImageView
-            android:id="@+id/searchIcon"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="12dp"
-            android:src="@drawable/ic_arrow_right" />
 
     </LinearLayout>
 

@@ -14,7 +14,7 @@
         android:layout_weight="1"
         android:text="Select a category"
         android:textColor="#000000"
-        android:textSize="@dimen/text_md" />
+        android:textSize="@dimen/text_medium" />
 
     <!-- Category -->
     <LinearLayout
@@ -25,7 +25,7 @@
         android:clickable="true"
         android:focusable="true"
         android:orientation="horizontal"
-        android:paddingHorizontal="@dimen/padding_s"
+        android:paddingHorizontal="@dimen/padding_small"
         android:paddingVertical="@dimen/padding_xs">
 
         <TextView
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/padding_xs"
-            android:text="Exercise"
+            android:text="Category"
             android:textColor="#000000"
             android:textSize="@dimen/text_normal" />
 

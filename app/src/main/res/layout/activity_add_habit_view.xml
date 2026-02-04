@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFEBEE"
+    android:fitsSystemWindows="true"
     tools:context=".view.AddHabitView">
 
     <!-- Header -->
@@ -14,8 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:cardBackgroundColor="#FFEBEE"
-        app:layout_constraintTop_toTopOf="parent"
         app:cardCornerRadius="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/scrollViewAddHabitView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@android:color/transparent"
         app:strokeWidth="0dp">
 
@@ -23,7 +27,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="@dimen/margin_small"
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/margin_medium">
 
@@ -45,8 +48,8 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/padding_normal"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/padding_normal">
 
                     <ImageView
                         android:id="@+id/pageIcon"
@@ -54,7 +57,7 @@
                         android:layout_height="20dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginHorizontal="@dimen/padding_xs"
-                        android:src="@drawable/main_icon"/>
+                        android:src="@drawable/main_icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -76,13 +79,15 @@
                 android:id="@+id/saveHabit"
                 android:layout_width="@dimen/button_width"
                 android:layout_height="@dimen/button_height"
-                android:backgroundTint="#E57373"
+                android:backgroundTint="#FFFFFF"
+                android:elevation="10dp"
+                android:minHeight="48dp"
+                android:paddingHorizontal="@dimen/padding_xs"
                 android:text="Save"
                 android:textColor="#000000"
                 android:textSize="@dimen/text_small"
                 android:textStyle="bold"
-                app:cornerRadius="10dp"
-                android:elevation="10dp"/>
+                app:cornerRadius="10dp" />
 
         </LinearLayout>
 
@@ -94,8 +99,8 @@
         android:id="@+id/scrollViewAddHabitView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fillViewport="true"
         android:background="#FFEBEE"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +112,7 @@
             android:layout_gravity="center_horizontal"
             android:gravity="top"
             android:orientation="vertical"
-            android:paddingTop="16dp"
+            android:paddingTop="10dp"
             android:paddingBottom="32dp">
 
             <!-- Habit Property-->

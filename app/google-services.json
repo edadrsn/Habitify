@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "296122802053",
+    "project_id": "habitify-5354c",
+    "storage_bucket": "habitify-5354c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296122802053:android:515996ecd13fcd38b22eec",
+        "android_client_info": {
+          "package_name": "com.edadursun.habitify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEOe-R35t9Z94APZyKCLVPT80v6aT4lgo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

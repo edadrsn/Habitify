@@ -1,4 +1,4 @@
-package com.edadursun.habitify.view
+package com.edadursun.habitify.data
 
 import java.util.UUID
 

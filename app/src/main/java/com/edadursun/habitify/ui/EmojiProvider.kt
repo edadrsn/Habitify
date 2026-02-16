@@ -1,7 +1,6 @@
 package com.edadursun.habitify.ui
 
-// Emoji verilerini sağlar
-// Emojileri uidan ayırıp tek bir yerde yönetmemi sağlıyor
+// Sabit veri kaynağı - Singleton - Tek bir tane olcak
 object EmojiProvider {
 
     val emojiList= listOf(

@@ -1,8 +1,6 @@
 package com.edadursun.habitify.ui
 
-//Statik ui verisi
-//Renk listesini uidan ayırır ve tek bir yerden yönetiriz
-//RENK VERİSİNİ SAĞLAR
+// Sabit veri kaynağı - Singleton - Tek bir tane olcak
 object ColorPalette {
 
     val colors = listOf(

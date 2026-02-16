@@ -5,6 +5,7 @@ import com.google.firebase.Timestamp
 import java.io.Serializable
 
 // Veriyi düzenli taşımamızı sağlar
+// Bir şeyin örneğini(instance) üretmek istediğimizde data class kullanırız
 data class Habit(
     var id:String="",
     val title:String="",
@@ -23,4 +24,5 @@ data class Habit(
     val isCompleted:Boolean = false,
     val startingDay:String = "",
     val lastUpdated:String?=""
+    
 ):Serializable

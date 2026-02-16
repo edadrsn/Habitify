@@ -1,5 +1,6 @@
 package com.edadursun.habitify.ui
 
+// Sabit veri kaynağı - Singleton - Tek bir tane olcak
 object CategoryType {
 
     val categories = listOf(

@@ -1,8 +1,12 @@
 package com.edadursun.habitify.model
 
+import android.os.Parcelable
 import com.google.firebase.Timestamp
+import java.io.Serializable
 
+// Veriyi düzenli taşımamızı sağlar
 data class Habit(
+    var id:String="",
     val title:String="",
     val colorHex:String="",
     val emoji:String="",
@@ -19,4 +23,4 @@ data class Habit(
     val isCompleted:Boolean = false,
     val startingDay:String = "",
     val lastUpdated:String?=""
-)
+):Serializable

@@ -2,9 +2,10 @@ package com.edadursun.habitify.data
 
 import android.content.Context
 import android.util.Log
+import com.edadursun.habitify.viewmodel.HabitDetailViewModel
 
 //CİHAZA USER IDYİ KAYDEDER VE OKUR
-class UserLocaleDataSource(context: Context) {
+class UserLocaleDataSource(private val context:Context) {
 
     private val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
@@ -15,9 +16,14 @@ class UserLocaleDataSource(context: Context) {
 
     //User id yi getirir
     fun getUser(): String? {
+        return try{
         val userId = sharedPreferences.getString(KEY_USER_ID, null)
         Log.d("USER_ID", "USER ID VAR: $userId ")
-        return userId
+        userId
+        } catch (e:Exception){
+            sharedPreferences.edit().clear().apply()
+            null
+        }
     }
 
     //User id yi kaydet

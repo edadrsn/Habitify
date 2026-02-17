@@ -24,5 +24,5 @@ data class Habit(
     val isCompleted:Boolean = false,
     val startingDay:String = "",
     val lastUpdated:String?=""
-    
+
 ):Serializable

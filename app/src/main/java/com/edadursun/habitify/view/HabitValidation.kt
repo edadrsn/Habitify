@@ -1,11 +1,15 @@
 package com.edadursun.habitify.view
 
-import android.widget.Toast
+
+//Alt sınıfları sınırlı ve compile-time’da bilinen bir class türüdür.
+//Kimlerin bu class’ı extend edebileceği bellidir
+//Dışarıdan rastgele subclass oluşturulamaz
+//when kullanırken exhaustiveness (tüm durumları kapsama) garantisi verir
 
 // Hangi alan boş bilgisini taşır
-sealed class ToastMessage {
-    object Success : ToastMessage()
-    object HabitTitleEmpty : ToastMessage()
-    object TargetValueEmpty : ToastMessage()
-    object ReminderMessageEmpty : ToastMessage()
+sealed class HabitValidation {
+    object HabitTitleEmpty : HabitValidation()
+    object TargetValueEmpty : HabitValidation()
+    object ReminderMessageEmpty : HabitValidation()
+    object Success : HabitValidation()
 }

@@ -1,103 +1,317 @@
 package com.edadursun.habitify.viewmodel
 
+import android.annotation.SuppressLint
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.edadursun.habitify.model.Habit
+import com.edadursun.habitify.data.HabitRemoteDataSource
+import com.edadursun.habitify.data.HabitRepository
+import com.edadursun.habitify.data.UserLocaleDataSource
+import com.edadursun.habitify.data.UserRepository
+import com.edadursun.habitify.view.HabitValidation
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
-class AddHabitViewModel:ViewModel() {
+class AddHabitViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val _toastMessage=MutableLiveData<String>()
+    val toastMessage:LiveData<String> = _toastMessage
 
     //Home sayfasına gitme isteğini viewe bildirir
+    // Neden Unit ? Herhangi bir veri gönderme işlemi yok sadece tetikleme var
     private val _goToHomeView = MutableLiveData<Unit>()
-    val goToHomeView:LiveData<Unit> = _goToHomeView
+    val goToHomeView: LiveData<Unit> = _goToHomeView
 
-    fun onGoBackClicked(){
-        _goToHomeView.value=Unit
+    fun onGoBackClicked() {
+        _goToHomeView.value = Unit
     }
 
 
 
-    private val _selectedColor=MutableLiveData<String>()
-    val selectedColor:LiveData<String> = _selectedColor
+    /* HABIT TITLE */
+    private val _habitTitle = MutableLiveData<String>()
+    val habitTitle: LiveData<String> = _habitTitle
+
+
+    /* COLOR */
+    private val _selectedColor = MutableLiveData<String>()
+    val selectedColor: LiveData<String> = _selectedColor
 
     //Kullanıcının seçtiği rengi ui state olarak tutar
-    fun onColorSelected(color:String){
-        _selectedColor.value=color
-        Log.d("SELECTED","selected color : ${_selectedColor.value}")
+    fun onColorSelected(color: String) {
+        _selectedColor.value = color
+        Log.d("HABIT", "selected color : ${_selectedColor.value}")
     }
 
 
-
-    private val _selectedEmoji=MutableLiveData<String>()
-    val selectedEmoji:LiveData<String> = _selectedEmoji
+    /* EMOJI */
+    private val _selectedEmoji = MutableLiveData<String>()
+    val selectedEmoji: LiveData<String> = _selectedEmoji
 
     //Kullanıcının seçtiği emojiyi ui state olarak tutar
-    fun onEmojiSelected(emoji:String){
-        _selectedEmoji.value=emoji
-        Log.d("SELECTED","selected emoji : ${_selectedEmoji.value}")
-    }
-
-    private val _targetValue=MutableLiveData<Int>()
-    val targetValue:LiveData<Int> = _targetValue
-
-    fun onTargetValueSelected(targetValue:Int){
-        _targetValue.value=targetValue
-        Log.d("SELECTED","target value : ${_targetValue.value}")
+    fun onEmojiSelected(emoji: String) {
+        _selectedEmoji.value = emoji
+        Log.d("HABIT", "selected emoji : ${_selectedEmoji.value}")
     }
 
 
+    /* TARGET VALUE */
+    private val _targetValue = MutableLiveData<Int>()
+    val targetValue: LiveData<Int> = _targetValue
 
+
+
+    /* TARGET CATEGORY */
     // Kategori seçim bottom sheet'inin açılmasını tetikleyen event
     private val _openCategoryDropdown = MutableLiveData<Unit>()
-    val openCategoryDropdown:LiveData<Unit> = _openCategoryDropdown
+    val openCategoryDropdown: LiveData<Unit> = _openCategoryDropdown
 
-    fun onCategoryClicked(){
-        _openCategoryDropdown.value=Unit
+    fun onCategoryClicked() {
+        _openCategoryDropdown.value = Unit
     }
 
-    private val _selectedCategory=MutableLiveData<String>()
-    val selectedCategory:LiveData<String> = _selectedCategory
+    private val _selectedCategory = MutableLiveData<String>()
+    val selectedCategory: LiveData<String> = _selectedCategory
 
-    fun onCategorySelected(category:String){
-        _selectedCategory.value=category
-
+    fun onCategorySelected(category: String) {
+        _selectedCategory.value = category
+        Log.d("HABIT", "target category : ${_selectedCategory.value}")
     }
 
 
-    //Saat picker açma eventi
-    private val _openTimePicker = MutableLiveData<Unit>()
-    val openTimePicker:LiveData<Unit> = _openTimePicker
 
-    fun onTimeClicked(){
-        _openTimePicker.value=Unit
+    /* SELECTED DAYS */
+    private val _selectedDays = MutableLiveData<Set<String>>(emptySet())
+    val selectedDays: LiveData<Set<String>> = _selectedDays
+
+    init {
+        _selectedColor.value = "#FBC1BF" // varsayılan renk
     }
 
-    //Seçilen saat
+    //Mevcut seçili günleri al
+    //Eğer liste null ise boş set kabul et
+    //Eğer day setin içerisindeyse çıkar değilse ekle , yeni seti _selectedDays içerisne koy
+    fun onSelectedDays(day: String) {
+        val currentDays = _selectedDays.value ?: emptySet()
+        val updatedDays = if (currentDays.contains(day)) {
+            currentDays - day
+        } else {
+            currentDays + day
+        }
+        _selectedDays.value = updatedDays
+    }
+
+
+
+
+    /* REMINDERS */
+    private val _isReminderEnabled = MutableLiveData<Boolean>(false)
+    val isReminderEnabled: LiveData<Boolean> = _isReminderEnabled
+
+    fun onReminderSwitchChanged(isChecked: Boolean) {
+        _isReminderEnabled.value = isChecked
+        Log.d("HABIT", "reminders value : ${_isReminderEnabled.value}")
+    }
+
+
+
+    /* REMINDER MESSAGE */
+    private val _reminderMessage = MutableLiveData<String>()
+    val reminderMessage: LiveData<String> = _reminderMessage
+
+
+
+    /* TIME */
+    // TimePicker açılması gerektiğini viewa bildiren event, true olduğunda pickerı açar
+    private val _openTimePicker = MutableLiveData<Boolean>()
+    val openTimePicker: LiveData<Boolean> = _openTimePicker
+
+    //Kullanıcı saat alanına tıkladığında view a timepicker açması gerektiğini bildirir
+    fun onTimeClicked() {
+        _openTimePicker.value = true
+    }
+
+    //Kullanıcının seçtiği saat bilgisi
     private val _selectedTime = MutableLiveData<String>()
-    val selectedTime:LiveData<String> = _selectedTime
+    val selectedTime: LiveData<String> = _selectedTime
 
-    fun onTimeSelected(hour:Int,minute:Int){
-        val formattedTime=String.format("%02d:%02d", hour, minute)
-        _selectedTime.value=formattedTime
-        Log.d("SELECTED", "Selected time: $formattedTime")
+    //Initial state:viewmodel ilk oluşturulduğunda açılır , saat alanının boş kalmaması için mevcut saati set eder
+    init {
+        setCurrentTime()
+    }
+
+    //Cihazın mevcut saatini alır HH:MM formatına çevirir ve selectedTime livedatasına atar
+    @SuppressLint("NewApi")
+    private fun setCurrentTime() {
+        val now = LocalTime.now()
+        val formattedTime = String.format("%02d:%02d", now.hour, now.minute)
+        _selectedTime.value = formattedTime
+    }
+
+    //Kullanıcı timepicker üzerinden saat seçtiğinde çağrılır, seçilen saat viewmodel statine kaydedilir
+    fun onTimeSelected(hour: Int, minute: Int) {
+        _selectedTime.value = String.format("%02d:%02d", hour, minute)
+    }
+
+
+
+    /* SOUND */
+    private val _playSoundEvent = MutableLiveData<Int>()
+    val playSoundEvent: LiveData<Int> = _playSoundEvent
+
+    fun onSoundSelected(soundResId: Int) {
+        _playSoundEvent.value = soundResId
+    }
+
+
+    private fun buildReminderTimestamp(time: String): Timestamp {
+
+        // "23:39" → saat ve dakika
+        val parts = time.split(":")
+        val hour = parts[0].toInt()
+        val minute = parts[1].toInt()
+
+        // Bugünün tarihi
+        val today = LocalDate.now()
+
+        // LocalDateTime oluştur
+        val localDateTime = LocalDateTime.of(
+            today.year,
+            today.month,
+            today.dayOfMonth,
+            hour,
+            minute
+        )
+
+        // Cihazın timezone'u (Türkiye = UTC+3)
+        val zonedDateTime = localDateTime.atZone(ZoneId.systemDefault())
+
+        // Firestore Timestamp
+        return Timestamp(Date.from(zonedDateTime.toInstant()))
     }
 
 
 
     // VERİLERİ KAYDETME
-    fun onSaveHabitClicked(){
-        val color=selectedColor.value
-        val emoji=selectedEmoji.value
-        val targetValue=targetValue.value
-        val category=selectedCategory.value
-        val time=selectedTime.value
+    private val _validation=MutableLiveData<HabitValidation>()
+    val validation:LiveData<HabitValidation> = _validation
 
-        Log.d("Add Habit","Save clicked")
-        Log.d("Add Habit","Color: $color")
-        Log.d("Add Habit","Emoji: $emoji")
-        Log.d("Add Habit","Target Value: $targetValue")
-        Log.d("Add Habit","Category:$category")
-        Log.d("Add Habit","Time:$time")
+    fun onInputClicked(
+        habitTitle:String,
+        targetValue:String,
+        reminderMessage:String
+    ){
+        _habitTitle.value = habitTitle
+        _targetValue.value = targetValue.toIntOrNull() ?: 0
+        _reminderMessage.value = reminderMessage
+
+        when{
+            habitTitle.isBlank() ->{
+                _validation.value=HabitValidation.HabitTitleEmpty
+            }
+            targetValue.isBlank() ->{
+                _validation.value=HabitValidation.TargetValueEmpty
+            }
+            reminderMessage.isBlank() ->{
+                _validation.value=HabitValidation.ReminderMessageEmpty
+            }
+            else ->{
+                _validation.value = HabitValidation.Success
+            }
+         }
+    }
+
+    private val firestore=FirebaseFirestore.getInstance()
+    private val userRepository = UserRepository(UserLocaleDataSource(application))
+    private val habitRepository = HabitRepository(
+        remoteDataSource = HabitRemoteDataSource(firestore),
+        userRepository = userRepository,
+        firestore = firestore
+    )
+
+    fun onSaveHabitClicked() {
+
+        val title = habitTitle.value ?: return
+        val color = selectedColor.value ?: return
+        val emoji = selectedEmoji.value ?: "🔥"
+        val category = selectedCategory.value ?: "Category"
+        val targetValue = targetValue.value ?: 0
+        val reminderDays = selectedDays.value?.joinToString(",") ?: "Everyday"
+        val reminderMessage = reminderMessage.value ?: return
+        val sound = "Sound 1"
+        val reminderTimeString = selectedTime.value ?: return
+        val reminderTimestamp = buildReminderTimestamp(reminderTimeString)
+        val startingDay=getTodayAsString()
+
+        val days=selectedDays.value
+        val reminderEnabled=isReminderEnabled.value  ?: false
+
+
+        Log.d("Add Habit", "Title: $title ")
+        Log.d("Add Habit", "Save clicked")
+        Log.d("Add Habit", "Color: $color")
+        Log.d("Add Habit", "Emoji: $emoji")
+        Log.d("Add Habit", "Target Value: $targetValue")
+        Log.d("Add Habit", "Category:$category")
+        Log.d("Add Habit", "Time:$reminderTimestamp")
+        Log.d("Add Habit", "Reminder message:$reminderMessage")
+        Log.d("Add Habit","Reminder state:$reminderEnabled")
+        Log.d("Add Habit","Days:$days")
+
+
+
+
+        val habit = Habit(
+            title = title,
+            colorHex = color,
+            emoji = emoji,
+            category = category,
+            total = targetValue,
+            reminderDays = reminderDays,
+            reminderMessage = reminderMessage,
+            sound = sound,
+            reminderTime = reminderTimestamp,
+            current = 0,
+            longestSeries = 0,
+            missing = 0,
+            isCompleted = false,
+            complatedDay = emptyList(),
+            startingDay = startingDay,
+            lastUpdated = startingDay
+        )
+
+        habitRepository.addHabit(habit, onSuccess = {}, onError = {})
+
+        //Kayıt başarılıysa geri dön
+        _goToHomeView.value = Unit
+
+    }
+
+    init {
+            updateLastUpdatedForAllHabits()
+    }
+
+    // Bugünün tarihini gün-ay-yıl olarak al
+
+    private fun getTodayAsString(): String {
+        val today = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        return today.format(formatter)
+    }
+
+
+    fun updateLastUpdatedForAllHabits(){
+        val today=getTodayAsString()
+        habitRepository.updateAllHabitsLastUpdated(today)
     }
 
 }

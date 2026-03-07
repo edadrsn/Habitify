@@ -21,7 +21,7 @@ data class Habit(
     val current:Int=0,
     val longestSeries:Int=0,
     val missing:Int=0,
-    val isCompleted:Boolean = false,
+    var isCompleted:Boolean = false,
     val startingDay:String = "",
     val lastUpdated:String?=""
 

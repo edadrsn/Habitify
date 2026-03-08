@@ -23,10 +23,10 @@ import java.util.Date
 
 class AddHabitViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _toastMessage=MutableLiveData<String>()
-    val toastMessage:LiveData<String> = _toastMessage
+    private val _toastMessage = MutableLiveData<String>()
+    val toastMessage: LiveData<String> = _toastMessage
 
-    //Home sayfasına gitme isteğini viewe bildirir
+    // Home sayfasına gitme isteğini viewe bildirir
     // Neden Unit ? Herhangi bir veri gönderme işlemi yok sadece tetikleme var
     private val _goToHomeView = MutableLiveData<Unit>()
     val goToHomeView: LiveData<Unit> = _goToHomeView
@@ -34,7 +34,6 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
     fun onGoBackClicked() {
         _goToHomeView.value = Unit
     }
-
 
 
     /* HABIT TITLE */
@@ -69,7 +68,6 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
     val targetValue: LiveData<Int> = _targetValue
 
 
-
     /* TARGET CATEGORY */
     // Kategori seçim bottom sheet'inin açılmasını tetikleyen event
     private val _openCategoryDropdown = MutableLiveData<Unit>()
@@ -86,7 +84,6 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
         _selectedCategory.value = category
         Log.d("HABIT", "target category : ${_selectedCategory.value}")
     }
-
 
 
     /* SELECTED DAYS */
@@ -111,8 +108,6 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
     }
 
 
-
-
     /* REMINDERS */
     private val _isReminderEnabled = MutableLiveData<Boolean>(false)
     val isReminderEnabled: LiveData<Boolean> = _isReminderEnabled
@@ -123,11 +118,9 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
     }
 
 
-
     /* REMINDER MESSAGE */
     private val _reminderMessage = MutableLiveData<String>()
     val reminderMessage: LiveData<String> = _reminderMessage
-
 
 
     /* TIME */
@@ -163,7 +156,6 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
     }
 
 
-
     /* SOUND */
     private val _playSoundEvent = MutableLiveData<Int>()
     val playSoundEvent: LiveData<Int> = _playSoundEvent
@@ -173,70 +165,46 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
     }
 
 
-    private fun buildReminderTimestamp(time: String): Timestamp {
-
-        // "23:39" → saat ve dakika
-        val parts = time.split(":")
-        val hour = parts[0].toInt()
-        val minute = parts[1].toInt()
-
-        // Bugünün tarihi
-        val today = LocalDate.now()
-
-        // LocalDateTime oluştur
-        val localDateTime = LocalDateTime.of(
-            today.year,
-            today.month,
-            today.dayOfMonth,
-            hour,
-            minute
-        )
-
-        // Cihazın timezone'u (Türkiye = UTC+3)
-        val zonedDateTime = localDateTime.atZone(ZoneId.systemDefault())
-
-        // Firestore Timestamp
-        return Timestamp(Date.from(zonedDateTime.toInstant()))
-    }
-
-
-
     // VERİLERİ KAYDETME
-    private val _validation=MutableLiveData<HabitValidation>()
-    val validation:LiveData<HabitValidation> = _validation
+    private val _validation = MutableLiveData<HabitValidation>()
+    val validation: LiveData<HabitValidation> = _validation
 
     fun onInputClicked(
-        habitTitle:String,
-        targetValue:String,
-        reminderMessage:String
-    ){
+        habitTitle: String,
+        targetValue: String,
+        reminderMessage: String
+    ) {
         _habitTitle.value = habitTitle
         _targetValue.value = targetValue.toIntOrNull() ?: 0
         _reminderMessage.value = reminderMessage
 
-        when{
-            habitTitle.isBlank() ->{
-                _validation.value=HabitValidation.HabitTitleEmpty
+        when {
+            habitTitle.isBlank() -> {
+                _validation.value = HabitValidation.HabitTitleEmpty
             }
-            targetValue.isBlank() ->{
-                _validation.value=HabitValidation.TargetValueEmpty
+
+            targetValue.isBlank() -> {
+                _validation.value = HabitValidation.TargetValueEmpty
             }
-            reminderMessage.isBlank() ->{
-                _validation.value=HabitValidation.ReminderMessageEmpty
+
+            reminderMessage.isBlank() -> {
+                _validation.value = HabitValidation.ReminderMessageEmpty
             }
-            else ->{
+
+            else -> {
                 _validation.value = HabitValidation.Success
             }
-         }
+        }
     }
 
-    private val firestore=FirebaseFirestore.getInstance()
+    private val firestore = FirebaseFirestore.getInstance()
     private val userRepository = UserRepository(UserLocaleDataSource(application))
     private val habitRepository = HabitRepository(
         remoteDataSource = HabitRemoteDataSource(firestore),
         userRepository = userRepository,
         firestore = firestore
     )
+
 
     fun onSaveHabitClicked() {
 
@@ -249,11 +217,9 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
         val reminderMessage = reminderMessage.value ?: return
         val sound = "Sound 1"
         val reminderTimeString = selectedTime.value ?: return
-        val reminderTimestamp = buildReminderTimestamp(reminderTimeString)
-        val startingDay=getTodayAsString()
-
-        val days=selectedDays.value
-        val reminderEnabled=isReminderEnabled.value  ?: false
+        val startingDay = getTodayAsString()
+        val days = selectedDays.value
+        val reminderEnabled = isReminderEnabled.value ?: false
 
 
         Log.d("Add Habit", "Title: $title ")
@@ -262,12 +228,10 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
         Log.d("Add Habit", "Emoji: $emoji")
         Log.d("Add Habit", "Target Value: $targetValue")
         Log.d("Add Habit", "Category:$category")
-        Log.d("Add Habit", "Time:$reminderTimestamp")
+        Log.d("Add Habit", "Time:$reminderTimeString")
         Log.d("Add Habit", "Reminder message:$reminderMessage")
-        Log.d("Add Habit","Reminder state:$reminderEnabled")
-        Log.d("Add Habit","Days:$days")
-
-
+        Log.d("Add Habit", "Reminder state:$reminderEnabled")
+        Log.d("Add Habit", "Days:$days")
 
 
         val habit = Habit(
@@ -279,7 +243,7 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
             reminderDays = reminderDays,
             reminderMessage = reminderMessage,
             sound = sound,
-            reminderTime = reminderTimestamp,
+            reminderTime = reminderTimeString,
             current = 0,
             longestSeries = 0,
             missing = 0,
@@ -289,7 +253,14 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
             lastUpdated = startingDay
         )
 
-        habitRepository.addHabit(habit, onSuccess = {}, onError = {})
+        habitRepository.addHabit(
+            habit,
+            onSuccess = {
+                Log.d("Add Habit", "Habit eklendi")
+            },
+            onError = {
+                Log.d("Add Habit", "Habit eklenemedi")
+            })
 
         //Kayıt başarılıysa geri dön
         _goToHomeView.value = Unit
@@ -297,7 +268,7 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
     }
 
     init {
-            updateLastUpdatedForAllHabits()
+        updateLastUpdatedForAllHabits()
     }
 
     // Bugünün tarihini gün-ay-yıl olarak al
@@ -308,9 +279,9 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
         return today.format(formatter)
     }
 
-
-    fun updateLastUpdatedForAllHabits(){
-        val today=getTodayAsString()
+    //lastUpdated alanını güncelle
+    fun updateLastUpdatedForAllHabits() {
+        val today = getTodayAsString()
         habitRepository.updateAllHabitsLastUpdated(today)
     }
 

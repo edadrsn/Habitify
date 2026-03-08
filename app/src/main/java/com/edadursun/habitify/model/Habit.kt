@@ -15,7 +15,7 @@ data class Habit(
     val reminderDays:String="",
     val reminderMessage:String="",
     val sound:String="",
-    val reminderTime:Timestamp=Timestamp.now(),
+    val reminderTime:String="",
     val total:Int = 0,
     val complatedDay:List<String> = emptyList(),
     val current:Int=0,

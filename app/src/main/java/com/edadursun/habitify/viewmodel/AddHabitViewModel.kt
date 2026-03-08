@@ -108,16 +108,6 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
     }
 
 
-    /* REMINDERS */
-    private val _isReminderEnabled = MutableLiveData<Boolean>(false)
-    val isReminderEnabled: LiveData<Boolean> = _isReminderEnabled
-
-    fun onReminderSwitchChanged(isChecked: Boolean) {
-        _isReminderEnabled.value = isChecked
-        Log.d("HABIT", "reminders value : ${_isReminderEnabled.value}")
-    }
-
-
     /* REMINDER MESSAGE */
     private val _reminderMessage = MutableLiveData<String>()
     val reminderMessage: LiveData<String> = _reminderMessage
@@ -156,12 +146,13 @@ class AddHabitViewModel(application: Application) : AndroidViewModel(application
     }
 
 
-    /* SOUND */
-    private val _playSoundEvent = MutableLiveData<Int>()
-    val playSoundEvent: LiveData<Int> = _playSoundEvent
+    /* REMINDERS */
+    private val _isReminderEnabled = MutableLiveData<Boolean>(false)
+    val isReminderEnabled: LiveData<Boolean> = _isReminderEnabled
 
-    fun onSoundSelected(soundResId: Int) {
-        _playSoundEvent.value = soundResId
+    fun onReminderSwitchChanged(isChecked: Boolean) {
+        _isReminderEnabled.value = isChecked
+        Log.d("HABIT", "reminders value : ${_isReminderEnabled.value}")
     }
 
 

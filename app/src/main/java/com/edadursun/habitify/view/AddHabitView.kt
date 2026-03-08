@@ -71,11 +71,13 @@ class AddHabitView : AppCompatActivity() {
             binding.scrollViewAddHabitView.setBackgroundColor(Color.parseColor(color))
 
             //Emojinin arka plan rengini ayarla
-            val emojiBg = binding.itemRowHabitHeader.selectedEmoji.background.mutate() as GradientDrawable
+            val emojiBg =
+                binding.itemRowHabitHeader.selectedEmoji.background.mutate() as GradientDrawable
             emojiBg.setColor(Color.parseColor(color))
 
             //Kullanıcının seçtiği rengi göster
-            val userSelectedColor = binding.itemRowColor.userSelectedColor.background.mutate() as GradientDrawable
+            val userSelectedColor =
+                binding.itemRowColor.userSelectedColor.background.mutate() as GradientDrawable
             userSelectedColor.setColor(Color.parseColor(color))
 
             //Seçilen günlerin arka plan rengi
@@ -136,23 +138,6 @@ class AddHabitView : AppCompatActivity() {
         }
 
 
-        /* REMINDERS */
-        //Switch açılıp kapanma durumunu view modele bildirir
-        binding.itemRowReminderHeader.reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.onReminderSwitchChanged(isChecked)
-        }
-
-        viewModel.isReminderEnabled.observe(this) { isEnabled ->
-            val selectedColor = viewModel.selectedColor.value
-            if (isEnabled && selectedColor != null) {
-                binding.itemRowReminderHeader.reminderSwitch.thumbTintList =
-                    ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
-                binding.itemRowReminderHeader.reminderSwitch.trackTintList =
-                    ColorStateList.valueOf(Color.parseColor(selectedColor))
-            }
-        }
-
-
         /* SELECTED DAYS */
         binding.itemRowReminderDays.Mon.setOnClickListener { viewModel.onSelectedDays("Monday") }
         binding.itemRowReminderDays.Tue.setOnClickListener { viewModel.onSelectedDays("Tuesday") }
@@ -205,20 +190,21 @@ class AddHabitView : AppCompatActivity() {
         }
 
 
-        /* SOUND */
-        fun playSound(id: Int) {
-            mediaPlayer?.release()
-            mediaPlayer = MediaPlayer.create(this, id)
-            mediaPlayer?.start()
+        /* REMINDERS */
+        //Switch açılıp kapanma durumunu view modele bildirir
+        binding.itemRowReminderHeader.reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.onReminderSwitchChanged(isChecked)
         }
 
-        viewModel.playSoundEvent.observe(this) { soundResId ->
-            playSound(soundResId)
+        viewModel.isReminderEnabled.observe(this) { isEnabled ->
+            val selectedColor = viewModel.selectedColor.value
+            if (isEnabled && selectedColor != null) {
+                binding.itemRowReminderHeader.reminderSwitch.thumbTintList =
+                    ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
+                binding.itemRowReminderHeader.reminderSwitch.trackTintList =
+                    ColorStateList.valueOf(Color.parseColor(selectedColor))
+            }
         }
-        viewModel.onSoundSelected(R.raw.sound1)
-
-
-
 
         //BUTONA TIKLAMA bilgisini viewholder a haber ver
         binding.saveHabit.setOnClickListener {
@@ -230,34 +216,38 @@ class AddHabitView : AppCompatActivity() {
 
         }
 
-        viewModel.validation.observe(this){ result ->
-            binding.itemRowHabitHeader.tvHabitTitleError.visibility=View.GONE
-            binding.itemRowTargetValue.tvTargetValueError.visibility= View.GONE
-            binding.itemRowReminderMessage.tvReminderMessageError.visibility=View.GONE
+        viewModel.validation.observe(this) { result ->
+            binding.itemRowHabitHeader.tvHabitTitleError.visibility = View.GONE
+            binding.itemRowTargetValue.tvTargetValueError.visibility = View.GONE
+            binding.itemRowReminderMessage.tvReminderMessageError.visibility = View.GONE
 
 
-            when(result){
-                HabitValidation.HabitTitleEmpty ->{
-                    binding.itemRowHabitHeader.tvHabitTitleError.text= "❗Habit title cannot be left blank."
-                    binding.itemRowHabitHeader.tvHabitTitleError.visibility=View.VISIBLE
+            when (result) {
+                HabitValidation.HabitTitleEmpty -> {
+                    binding.itemRowHabitHeader.tvHabitTitleError.text =
+                        "❗Habit title cannot be left blank."
+                    binding.itemRowHabitHeader.tvHabitTitleError.visibility = View.VISIBLE
                 }
-                HabitValidation.TargetValueEmpty ->{
-                    binding.itemRowTargetValue.tvTargetValueError.text = "❗Target value cannot be left blank "
-                    binding.itemRowTargetValue.tvTargetValueError.visibility= View.VISIBLE
+
+                HabitValidation.TargetValueEmpty -> {
+                    binding.itemRowTargetValue.tvTargetValueError.text =
+                        "❗Target value cannot be left blank "
+                    binding.itemRowTargetValue.tvTargetValueError.visibility = View.VISIBLE
 
                 }
-                HabitValidation.ReminderMessageEmpty ->{
-                    binding.itemRowReminderMessage.tvReminderMessageError.text = "❗Reminder message cannot be left blank."
-                    binding.itemRowReminderMessage.tvReminderMessageError.visibility=View.VISIBLE
+
+                HabitValidation.ReminderMessageEmpty -> {
+                    binding.itemRowReminderMessage.tvReminderMessageError.text =
+                        "❗Reminder message cannot be left blank."
+                    binding.itemRowReminderMessage.tvReminderMessageError.visibility = View.VISIBLE
                 }
+
                 HabitValidation.Success -> {
                     // BURADA KAYDETME İŞLEMİ
                     viewModel.onSaveHabitClicked()
                 }
             }
         }
-
-
 
 
     }
